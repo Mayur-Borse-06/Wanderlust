@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
+const port = 3000;
 
 main()
 .then(() => {
@@ -24,9 +25,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(8080, () => {
-    console.log("Server is now listening on port 8080");
-})
 
 //index route
 app.get("/listings", async(req, res) => {
@@ -34,16 +32,19 @@ app.get("/listings", async(req, res) => {
     res.render("listings/index.ejs", { allListings });
 })
 
-//new route
+//create route
 app.get("/listings/new", (req, res) => {
     res.render("listings/new.ejs");
 })
 
-//create route
-app.post("/listings", async(req, res) => {
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings");
+app.post("/listings", async(req, res, next) => {
+    try {
+        let newListing = new Listing(req.body.listing);
+        await newListing.save();
+        res.redirect("/listings");
+    } catch (err) {
+        next(err);
+    }
 })
 
 //show route
@@ -74,4 +75,18 @@ app.delete("/listings/:id", async(req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
+})
+
+//Error handling middlewares
+app.use((err, req, res, next) => {
+    res.send("Some error occured");
+})
+
+
+
+
+
+
+app.listen(port, () => {
+    console.log("Server is now listening on port 3000");
 })
