@@ -9,17 +9,13 @@ const port = 3000;
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const listingSchema = require("./schema.js");
-const { error } = require("console");
+require('dotenv').config({ path: './.env' });
+console.log("MONGO_URI:", process.env.MONGO_URI); // Debugging ke liye
 
-main()
-.then(() => {
-    console.log("Connected to db");
-})
-.catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected Successfully"))
+  .catch(err => console.error("MongoDB Connection Error:", err));
 
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
-}
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
