@@ -9,7 +9,7 @@ main()
 .catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
+  await mongoose.connect("mongodb+srv://mayur-borse-06:mayur33813381@cluster0.odfu1.mongodb.net/wanderlust?retryWrites=true&w=majority");
 }
 
 const initDB = async() => {
