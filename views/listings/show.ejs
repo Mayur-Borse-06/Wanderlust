@@ -34,7 +34,7 @@
           </div>
           <div class="mb-3 mt-3">
             <label for="comment" class="form-label">Comments</label>
-            <textarea class="form-control" id="comment" name="review[comment]" required></textarea>
+            <textarea class="form-control" id="comment" name="review[comment]" placeholder="Enter your thoughts here" required></textarea>
             <div class="invalid-feedback">Please add some comments for review</div>
             <div class="valid-feedback">Thank you for your feedback!</div>
           </div>
@@ -43,10 +43,10 @@
 
         <hr>
 
-        <h4>All Reviews</h4>
+        <h4 class="mb-3">All Reviews</h4>
         <div class="row">
           <% for(review of listing.reviews) { %>
-            <div class="card col-5 ms-3 mb-3">
+            <div class="card col-md-5 ms-md-3 mb-3">
               <div class="card-body">
                 <h5 class="card-title">Jane Doe</h5>
                 <p class="card-text"><%= review.comment %></p>

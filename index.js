@@ -16,6 +16,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch(err => console.error("MongoDB Connection Error:", err));
 
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.engine("ejs", ejsMate);
@@ -45,5 +46,5 @@ app.use((err, req, res, next) => {
 
 
 app.listen(port, () => {
-    console.log("Server is now listening on port 3000");
+    console.log("Server working");
 })
