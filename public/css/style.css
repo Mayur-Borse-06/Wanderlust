@@ -121,3 +121,17 @@ body {
 .btns {
     display: flex;
 }
+
+
+/* small screen size fix */
+@media (max-width: 575.98px) {
+    .fix {
+      margin-left: 0.8rem;
+    }
+  }
+  @media (min-width: 576px) {
+    .fix {
+      margin-left: 0;
+    }
+  }
+  
