@@ -3,14 +3,15 @@ const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { listingSchema } = require("../schema.js");
-const Listing = require("../models/listing");
+const Listing = require("../models/listing.js");
 const { isLoggedIn, isOwner } = require('../middleware.js');
+const listingController = require("../controllers/listings.js");
 
 
 //listing validation
 const validateListing = (req, res, next) => {
     let { error } = listingSchema.validate(req.body);
-    if(error) {
+    if (error) {
         let errMsg = error.details.map((el) => { return el.message }).join(",");
         throw new ExpressError(400, errMsg)
     } else {
@@ -18,76 +19,24 @@ const validateListing = (req, res, next) => {
     }
 }
 
-//index route
-router.get("/", wrapAsync(async(req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-}))
+router.route("/")
+.get(wrapAsync(listingController.index))
+.post(isLoggedIn, validateListing, wrapAsync(listingController.createNewListing))
 
-//create route
-router.get("/new", isLoggedIn,(req, res) => {
-    res.render("listings/new.ejs");
-})
+//render create listing form
+router.get("/new", isLoggedIn, listingController.renderNewForm);
 
-router.post("/", isLoggedIn,validateListing, wrapAsync(async(req, res, next) => {
-    let newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash("success", "New listing created!");
-    res.redirect("/listings");
+router.route("/:id")
+.get(wrapAsync(listingController.showListing))
+.put(isLoggedIn, isOwner, wrapAsync(listingController.updateListing))
+.delete(
+    isLoggedIn,
+    isOwner,
+    wrapAsync(listingController.destroyListing))
 
-}))
-
-//show route
-router.get("/:id", wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
-    if(!listing) {
-        req.flash("error", "Listing you requested does not exist");
-        return res.redirect("/listings");
-    }
-    res.render("listings/show.ejs", { listing })
-}))
 
 //update route
-router.get("/:id/edit",
-    isLoggedIn,
-    isOwner,
-    wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    if(!listing) {
-        req.flash("error", "Listing you requested does not exist");
-        return res.redirect("/listings");
-    }
-    res.render("listings/edit.ejs", { listing })
-}))
-
-router.put("/:id",
-    isLoggedIn,
-    isOwner,
-    wrapAsync(async(req, res) => {
-    if(!req.body.listing) {
-        throw new ExpressError(400, "Please send valid data for listing")
-    }
-    let { id } = req.params;
-    let updatedListing = req.body.listing;
-    await Listing.findByIdAndUpdate(id, {...updatedListing});
-    req.flash("success", "Listing updated!");
-    res.redirect(`/listings/${id}`);
-}))
-
-//destroy route
-
-router.delete("/:id",
-    isLoggedIn,
-    isOwner,
-    wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    req.flash("success", "Listing deleted!");
-    res.redirect("/listings");
-}))
+router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.renderEditForm));
 
 module.exports = router;
 
