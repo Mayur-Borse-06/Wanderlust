@@ -1,10 +1,13 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 
 
 // initListings.js
 const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 
-const MONGO_URL = "mongodb+srv://mayur-borse-06:mayur33813381@cluster0.odfu1.mongodb.net/wanderlust?retryWrites=true&w=majority";
+const MONGO_URL = process.env.ATLASDB_URL;
 
 const listings = [
   {
