@@ -9,11 +9,12 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        type: String,
-        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDXvzB8AP6D9djpASxBiu77exJ7_6aGWvcAg&s",
-        set: (v) => {
-            return v===""? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDXvzB8AP6D9djpASxBiu77exJ7_6aGWvcAg&s": v
+        url: {
+            type: String,
         },
+        fileName: {
+            type: String,
+        }
     },
     price: Number,
     location: String,
